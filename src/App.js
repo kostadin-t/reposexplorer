@@ -1,23 +1,53 @@
-import logo from './logo.svg';
+import { useEffect, useState } from 'react';
 import './App.css';
+import { RepoContainer } from './containers/RepoContainer';
+import { Home } from './Home';
 
-function App() {
+const App = () => {
+  const [repos, setRepos] = useState([]);
+  const [currentRepo, setCurrentRepo] = useState();
+
+  useEffect(() => {
+    fetch('https://api.github.com/users/felangel/repos').then(async (response) => {
+      const newRepos = await response.json();
+      setRepos(newRepos);
+    });
+  }, []);
+
+  const handleChoose = (repoId) => {
+    const chosenRepo = repos.find(repo => repo.id === repoId);
+    setCurrentRepo(chosenRepo);
+  }
+
+  const handleReturnToDirectoryClick = () => {
+    setCurrentRepo(null);
+  }
+
+  let body;
+  if (currentRepo) {
+    body = (
+      <RepoContainer
+        repoName={currentRepo.name}
+        repoOwner={currentRepo.owner.login}
+      />
+    );
+  } else {
+    body = <Home onChoose={handleChoose} repos={repos}/>;
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+      <header>
+        <nav>
+          {currentRepo && (
+            <button onClick={handleReturnToDirectoryClick}>
+              Return to directory
+            </button>
+          )}
+        </nav>
       </header>
+
+      <main>{body}</main>
     </div>
   );
 }
