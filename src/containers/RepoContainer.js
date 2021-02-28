@@ -6,8 +6,10 @@ import { Repo } from '../components/Repo';
 export const RepoContainer = (props) => {
   const [repoData, setRepoData] = useState(null);
 
+  const { repoOwner, repoName } = props;
+
   useEffect(() => {
-    fetch(`https://api.github.com/repos/${props.repoOwner}/${props.repoName}`).then(async (response) => {
+    fetch(`https://api.github.com/repos/${repoOwner}/${repoName}`).then(async (response) => {
       const repoData = await response.json();
       setRepoData(repoData);
     });

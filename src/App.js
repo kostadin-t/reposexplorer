@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import { RepoContainer } from './containers/RepoContainer';
 import { Home } from './Home';
+import { reposConfig } from './config';
 
 const App = () => {
   const [repos, setRepos] = useState([]);
   const [currentRepo, setCurrentRepo] = useState();
 
   useEffect(() => {
-    fetch('https://api.github.com/users/felangel/repos').then(async (response) => {
+    fetch(reposConfig.reposUrl).then(async (response) => {
       const newRepos = await response.json();
       setRepos(newRepos);
     });
@@ -41,7 +42,7 @@ const App = () => {
         <nav>
           {currentRepo && (
             <button onClick={handleReturnToDirectoryClick}>
-              Return to directory
+              Return to home
             </button>
           )}
         </nav>
